@@ -1,3 +1,4 @@
+import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 
@@ -65,7 +66,6 @@ class Measurement(db.Model):
         self.n_samples = n_samples
         self.samples_from = samples_from
         self.samples_to = samples_to
-
         
 
     def to_dict(self) -> dict:
@@ -79,6 +79,6 @@ class Measurement(db.Model):
             "power_mean": self.power_mean,
             "power_stdev":self.power_stdev,
             "n_samples": self.n_samples,
-            "samples_from": self.samples_from,
-            "samples_to": self.samples_to
+            "samples_from": self.samples_from.isoformat(),
+            "samples_to": self.samples_to.isoformat()
         }
