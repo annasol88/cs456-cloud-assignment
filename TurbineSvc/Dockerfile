@@ -8,6 +8,7 @@ RUN apt install -y libmariadb-dev gcc
 RUN apt-get clean 
 RUN rm -rf /var/lib/apt/lists/*
 COPY . .
-RUN pip3 install --upgrade pip && pip3 install -r requirements.txt
+RUN pip3 install --upgrade pip 
+RUN pip3 install -r requirements.txt
 ENV SVC_PORT=5000
 CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:$SVC_PORT app:app"]
