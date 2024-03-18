@@ -2,8 +2,10 @@ from flask import Blueprint, request, jsonify,make_response
 from models import db
 import models as models
 
+
 turbines_bp = Blueprint('turbines', __name__, url_prefix='/turbines')
 measurements_bp = Blueprint('measurements', __name__, url_prefix='/measurements')
+
 
 @turbines_bp.route('/', methods=['GET', 'POST'])
 def turbines():

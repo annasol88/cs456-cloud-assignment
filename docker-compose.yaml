@@ -1,55 +1,33 @@
 version: "3.9"
 services:
-    turbineSvc:
-        container_name: "turbine_svc"
-        build: .
+    turbinesvc:
+        container_name: "turbine-svc"
+        build: ./TurbineSvc
         ports:
-            - "8888:8888"
+            - "5001:5000"
         depends_on:
             - db
         links:
             - db
         restart: 'always'
         environment:
-            SVC_HOST: "${SVC_HOST}"
+            SVC_PORT: "5000"
+            DB_DRIVER: "mariadb+mariadbconnector"
             DB_NAME: "${DB_NAME}"
             DB_USER: "${DB_USER}"
+            DB_PASSWORD: "${DB_PASSWORD}"
             DB_SERVER: db
-        secrets: 
-            - db_password
-      measurementFunc:
-        container_name: "measurement_func"
-        build: .
-        ports:
-            - "9999:9999"
-        depends_on:
-            - db
-        links:
-            - db
-        restart: 'always'
-        environment:
-            SVC_HOST: "${SVC_HOST}"
-            DB_NAME: "${DB_NAME}"
-            DB_USER: "${DB_USER}"
-            DB_SERVER: db
-        secrets: 
-            - db_password
+            DB_PORT: "3306"
+            
     db:
-        container_name: "maria_db"
+        container_name: "turbine-db"
         image: "mariadb:10"
+        restart: 'always'
         ports:
-            - "3306:3306"
+            - "3308:3306"
         environment:
-            DB_USER: "${DB_PASSWORD}"
-            DB_NAME: "${DB_NAME}"
-        secrets: 
-            - db_root_password
-            - db_password
+            MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
         volumes:
-            - ./docker-entrypoint-initdb.d
+            - ./db:/docker-entrypoint-initdb.d/:ro
 
-secrets:
-    db_root_password:
-        file: db_root_password.txt
-    db_password:
-        file: db_password.txt
+
