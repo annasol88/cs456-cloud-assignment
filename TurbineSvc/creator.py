@@ -3,7 +3,7 @@ from models import db
 
 def create_app(name, config):
     app = Flask(name)
-    app.config.update(config)
+    app.config = config
     with app.app_context():
         db.init_app(app)
         db.create_all()

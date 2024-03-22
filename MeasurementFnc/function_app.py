@@ -89,10 +89,7 @@ def record_measurements(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(error_message,
                                      status_code=500)
 
-    logging.info("Creating DB tables if needed.")
-    models.Base.metadata.create_all(engine)
     session = Session(engine)
-    
     statement = sqlalchemy.select(models.Turbine).where(models.Turbine.serial == turbine_serial)
     turbine = session.execute(statement).scalar_one_or_none()
 

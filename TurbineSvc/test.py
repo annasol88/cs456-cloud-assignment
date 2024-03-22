@@ -1,12 +1,12 @@
 from datetime import datetime
 import json
 import unittest
-from create_app import create_app
-from models import db
+from creator import create_app
 import models
+from models import db
 
 
-class TestApp(unittest.TestCase):
+class TestTurbineSvc(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         test_config = {
@@ -26,8 +26,8 @@ class TestApp(unittest.TestCase):
 
 
     def setUp(self) -> None:
-        db.init_app(self.app)
         db.create_all()
+        db.session.commit()
         
 
     def tearDown(self) -> None:
@@ -39,7 +39,7 @@ class TestApp(unittest.TestCase):
         turbine = models.Turbine(serial='XY-34543RG')
         db.session.add(turbine)
         db.session.commit()
-        resp = self.client.get('/turbines')
+        resp = self.client.get('/turbines/')
         json_resp = json.loads(resp.data)
         self.assertEqual(len(json_resp), 1)
         expected_resp = turbine.to_dict()
@@ -49,20 +49,20 @@ class TestApp(unittest.TestCase):
 
     def test_post_turbine_success(self):
         new_turbine={'serial':'XY-34543RG'}
-        resp = self.client.post('/turbines', json=new_turbine)
+        resp = self.client.post('/turbines/', json=new_turbine)
         self.assertEqual(resp.status_code, 201)
         turbine = models.Turbine.query.first()
         self.assertEqual(turbine.serial, new_turbine['serial'])
 
 
     def test_post_turbine_invalid_request_type(self):
-        resp = self.client.post('/turbines')
+        resp = self.client.post('/turbines/')
         self.assertEqual(resp.status_code, 400)
 
 
     def test_post_turbine_invalid_request_json(self):
         new_turbine={'invalid-key':'XY-34543RG'}
-        resp = self.client.post('/turbines', json=new_turbine)
+        resp = self.client.post('/turbines/', json=new_turbine)
         self.assertEqual(resp.status_code, 400)
 
 
@@ -92,9 +92,11 @@ class TestApp(unittest.TestCase):
 
 
     def test_get_measurements_list_success(self):
-        turbine = models.Turbine(serial='XY-34543RG')
+        test_serial = 'XY-34543RG'
+        turbine = models.Turbine(serial=test_serial)
         db.session.add(turbine)
         db.session.commit()
+        turbine = models.Turbine.query.filter_by(serial=test_serial).first()
 
         measurement = models.Measurement(
             turbine_id=turbine.id,
@@ -110,7 +112,7 @@ class TestApp(unittest.TestCase):
         db.session.add(measurement)
         db.session.commit()
 
-        resp = self.client.get('/measurements')
+        resp = self.client.get('/measurements/')
         json_resp = json.loads(resp.data)
         self.assertEqual(len(json_resp), 1)
         expected_resp = measurement.to_dict()
@@ -128,9 +130,12 @@ class TestApp(unittest.TestCase):
     
 
     def test_get_measurement_by_turbine_serial_success(self):
-        turbine = models.Turbine(serial='XY-34543RG')
+        test_serial = 'XY-34543RG'
+        turbine = models.Turbine(serial=test_serial)
         db.session.add(turbine)
         db.session.commit()
+        
+        turbine = models.Turbine.query.filter_by(serial=test_serial).first()
 
         measurement = models.Measurement(
             turbine_id=turbine.id,
@@ -146,7 +151,7 @@ class TestApp(unittest.TestCase):
         db.session.add(measurement)
         db.session.commit()
 
-        resp = self.client.get('/measurements?serial={0}'.format(turbine.serial))
+        resp = self.client.get(f'/measurements/?serial={test_serial}')
         json_resp = json.loads(resp.data)
         self.assertEqual(len(json_resp), 1)
         expected_resp = measurement.to_dict()
@@ -163,7 +168,7 @@ class TestApp(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_get_measurement_turbine_serial_not_found(self):
-        resp = self.client.get('/measurements?serial={0}'.format("XY-INVALID"))
+        resp = self.client.get('/measurements/?serial=XY-INVALID')
         self.assertEqual(resp.status_code, 404)
     
     def test_turbine_route_not_found(self):

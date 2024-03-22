@@ -3,6 +3,7 @@ FROM mcr.microsoft.com/azure-functions/python:4-python3.11
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
     AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 
+# Installing mariaDB connector
 RUN apt update 
 RUN apt upgrade -y 
 RUN apt install -y curl 
