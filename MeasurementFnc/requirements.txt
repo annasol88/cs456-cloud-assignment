@@ -1,0 +1,4 @@
+azure-functions>=1.18
+PyMySQL>=1
+SQLAlchemy>=2
+
