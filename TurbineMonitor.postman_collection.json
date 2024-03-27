@@ -1,0 +1,164 @@
+{
+	"info": {
+		"_postman_id": "484c0092-9fc2-4b6a-835d-d6dce47fd42b",
+		"name": "Turbine monitor",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33636304"
+	},
+	"item": [
+		{
+			"name": "GET Turbines",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{webapp_uri}}/turbines",
+					"host": [
+						"{{webapp_uri}}"
+					],
+					"path": [
+						"turbines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Turbine",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"serial\": \"XY-343456\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{webapp_uri}}/turbines",
+					"host": [
+						"{{webapp_uri}}"
+					],
+					"path": [
+						"turbines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Turbine by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{webapp_uri}}/turbines/:id",
+					"host": [
+						"{{webapp_uri}}"
+					],
+					"path": [
+						"turbines",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Turbine",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{webapp_uri}}/turbines/:id",
+					"host": [
+						"{{webapp_uri}}"
+					],
+					"path": [
+						"turbines",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Measurements",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{webapp_uri}}/measurements?serial=XY-343456",
+					"host": [
+						"{{webapp_uri}}"
+					],
+					"path": [
+						"measurements"
+					],
+					"query": [
+						{
+							"key": "serial",
+							"value": "XY-343456"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Measurment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n\"timestamp\": \"2024-03-01T12:10:10.000010\",\r\n\"wind_speed\": 8,\r\n\"pitch\": 2.5,\r\n\"power\": 10\r\n},\r\n{\r\n\"timestamp\": \"2024-03-01T12:10:12.122272\",\r\n\"wind_speed\": 9,\r\n\"pitch\": 1.5,\r\n\"power\": 10.5\r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{fnc_uri}}/api/record-measurements?serial=XY-343456",
+					"host": [
+						"{{fnc_uri}}"
+					],
+					"path": [
+						"api",
+						"record-measurements"
+					],
+					"query": [
+						{
+							"key": "serial",
+							"value": "XY-343456"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

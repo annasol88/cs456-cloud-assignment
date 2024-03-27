@@ -43,3 +43,17 @@ def connection_args() -> dict:
         })
 
     return connection_args
+
+
+"""
+For testing a connection between and sqlalchemy DB engine
+Returns error if connection fails
+"""
+def test_connection(engine: sqlalchemy.Engine) -> str:
+    try:
+        engine.connect()
+        con = engine.connect()
+        con.close()
+    except sqlalchemy.exc.OperationalError as err:
+        return f"DB connection error: {err.__cause__}"
+    return ""

@@ -4,6 +4,7 @@ import unittest
 from creator import create_app
 import models
 from models import db
+from flask import Flask
 
 
 class TestTurbineSvc(unittest.TestCase):
@@ -14,7 +15,8 @@ class TestTurbineSvc(unittest.TestCase):
             'TESTING': True,
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         }
-        cls.app = create_app('Test App', test_config)
+        app = Flask(name)
+        cls.app = create_app(app, test_config)
         cls.app_context = cls.app.app_context()
         cls.app_context.push()
         cls.client = cls.app.test_client()
@@ -186,3 +188,6 @@ class TestTurbineSvc(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+print('test')

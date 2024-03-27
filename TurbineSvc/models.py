@@ -1,10 +1,20 @@
 
 from flask_sqlalchemy import SQLAlchemy
 
+"""
+An ORM package to map the python objects to DB tables using flask-sqlalchemy.
+All classes contain the respective attributes that align with a DB schema,
+an __init__ function to initialise an Object of its type
+as well as a to_dict representation to convert a given object into JSON format returned in webapp requests.
+"""
+
 
 db = SQLAlchemy()
 
 
+"""
+Representing a Turbine object inside the turbine_monitor DB
+"""
 class Turbine(db.Model):
     __tablename__ = 'turbine'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,24 +22,18 @@ class Turbine(db.Model):
     
     measurements = db.relationship('Measurement', backref='measurements', lazy=True)
 
-    def __init__(self,
-                 serial: str = "",
-                ) -> None:
+    def __init__(
+            self,
+            serial: str = "",) -> None:
         self.serial = serial
 
     def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "serial": self.serial,
-        }
-
-    def from_dict(self, data_dict: dict) -> None:
-        for key in data_dict:
-            if key == "id":
-                continue
-            setattr(self, key, data_dict[key])
+        return { "serial": self.serial, }
 
 
+"""
+Representing a Measurement object inside the turbine_monitor DB
+"""
 class Measurement(db.Model):
     __tablename__ = 'measurement'
     id = db.Column(db.Integer, primary_key=True)
@@ -70,8 +74,6 @@ class Measurement(db.Model):
 
     def to_dict(self) -> dict:
         return {
-            "id": self.id,
-            "turbine_id": self.turbine_id,
             "wind_speed_mean": self.wind_speed_mean,
             "wind_speed_stdev": self.wind_speed_stdev,
             "pitch_mean": self.pitch_mean,

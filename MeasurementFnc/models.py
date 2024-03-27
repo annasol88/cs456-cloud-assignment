@@ -3,10 +3,19 @@ from sqlalchemy import CHAR, DATETIME, Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 
+"""
+An ORM package to map the python objects to DB tables using sqlalchemy declarative base.
+All classes contain the respective attributes that align with a DB schema 
+along with an __init__ function to initialise an Object of its type
+"""
+
 
 Base = declarative_base()
 
 
+"""
+Representing a Turbine object inside the turbine_monitor DB
+"""
 class Turbine(Base):
     __tablename__ = 'turbine'
     id = Column(Integer, primary_key=True)
@@ -14,24 +23,15 @@ class Turbine(Base):
     
     measurements = relationship('Measurement', backref='measurements', lazy=True)
 
-    def __init__(self,
-                 serial: str = "",
-                ) -> None:
+    def __init__(
+            self,
+            serial: str = "",) -> None:
         self.serial = serial
 
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "serial": self.serial,
-        }
 
-    def from_dict(self, data_dict: dict) -> None:
-        for key in data_dict:
-            if key == "id":
-                continue
-            setattr(self, key, data_dict[key])
-
-
+"""
+Representing a Measurement object inside the turbine_monitor DB
+"""
 class Measurement(Base):
     __tablename__ = 'measurement'
     id = Column(Integer, primary_key=True)
@@ -70,28 +70,16 @@ class Measurement(Base):
         self.samples_to = samples_to
         
 
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "turbine_id": self.turbine_id,
-            "wind_speed_mean": self.wind_speed_mean,
-            "wind_speed_stdev": self.wind_speed_stdev,
-            "pitch_mean": self.pitch_mean,
-            "pitch_stdev": self.pitch_stdev,
-            "power_mean": self.power_mean,
-            "power_stdev":self.power_stdev,
-            "n_samples": self.n_samples,
-            "samples_from": self.samples_from.isoformat(),
-            "samples_to": self.samples_to.isoformat()
-        }
+'''
+Model used to parse a measurement reading to validate it is in the correct format.
+This does not inherit from declarative base because this is not part of the DB schema
 
-
+A better solution would be to use the jsonschema python package 
+for more granular validation and cleaner solution.
+'''
 class Measurement_Record():
     def __init__(self, wind_speed, pitch, power, timestamp):
         self.wind_speed: int = wind_speed
         self.pitch: int = pitch
         self.power: int = power
         self.timestamp: datetime = datetime.fromisoformat(timestamp)
-        
-    def __str__(self):
-        return f"measurment: {self.wind_speed}, {self.pitch}, {self.power}, {self.timestamp}"
